@@ -18,7 +18,7 @@ theorem(every_function_named) :- forall(( between(0, 15, X), maplist([I, B]>>(B 
 theorem(same_iff_same_function) :- forall(( net1(A), net1(B) ), ( renndiff(A, B, D), truth_table(A, T1), truth_table(B, T2), iff(D = same(_), T1 == T2) )).
 
 % 3. The differences listed are exactly the inputs where the outputs differ.
-theorem(differences_exact) :- forall(( net1(A), net1(B), renndiff(A, B, differ(_, _, Ds)) ), ( inputs(Is), forall(member(I, Is), ( forward(A, I, [Y1]), forward(B, I, [Y2]), iff(memberchk(I-_, Ds), Y1 =\= Y2) )) )).
+theorem(differences_exact) :- forall(( net1(A), net1(B), renndiff(A, B, differ(_, _, Ds)) ), ( renndiff:inputs(Is), forall(member(I, Is), ( forward(A, I, [Y1]), forward(B, I, [Y2]), iff(memberchk(I-_, Ds), Y1 =\= Y2) )) )).
 
 % 4. Scaling a neuron's weights and bias by a positive number recovers the same code.
 theorem(scaling_keeps_code) :- forall(( neuron1(n([A, B], C)), member(K, [2, 3]) ), ( A2 is K * A, B2 is K * B, C2 is K * C, recover([[n([A, B], C)]], X), recover([[n([A2, B2], C2)]], X) )).
