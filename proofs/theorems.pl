@@ -15,7 +15,7 @@ net1([[N]]) :- neuron1(N).
 theorem(every_function_named) :- forall(( between(0, 15, X), maplist([I, B]>>(B is (X >> I) /\ 1), [0, 1, 2, 3], T) ), findall(C, code_of(T, C), [_])).
 
 % 2. same exactly when the nets compute the same function, whatever their weights.
-theorem(same_iff_same_function) :- forall(( net1(A), net1(B) ), ( renndiff(A, B, D), table(A, T1), table(B, T2), iff(D = same(_), T1 == T2) )).
+theorem(same_iff_same_function) :- forall(( net1(A), net1(B) ), ( renndiff(A, B, D), truth_table(A, T1), truth_table(B, T2), iff(D = same(_), T1 == T2) )).
 
 % 3. The differences listed are exactly the inputs where the outputs differ.
 theorem(differences_exact) :- forall(( net1(A), net1(B), renndiff(A, B, differ(_, _, Ds)) ), ( inputs(Is), forall(member(I, Is), ( forward(A, I, [Y1]), forward(B, I, [Y2]), iff(memberchk(I-_, Ds), Y1 =\= Y2) )) )).

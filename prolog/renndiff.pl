@@ -6,7 +6,7 @@
 %?- recover([[n([2,2],-3)]], C).                                   % C = and
 %?- renndiff([[n([1,1],-1)]], [[n([5,5],-9)]], D).                % D = same(and)
 %?- renndiff([[n([1,1],0)]], [[n([1,1],-1)]], D).                 % D = differ(or, and, [[0,1]-(1-0), [1,0]-(1-0)])
-:- module(renndiff, [neuron/3, forward/3, table/2, recover/2, renndiff/3, code_of/2]).
+:- module(renndiff, [neuron/3, forward/3, truth_table/2, recover/2, renndiff/3, code_of/2]).
 :- use_module(library(lists)).
 :- use_module(library(apply)).
 
@@ -15,7 +15,7 @@ forward([], Xs, Xs).
 forward([L|Ls], Xs, Out) :- maplist([N, Y]>>neuron(N, Xs, Y), L, Ys), forward(Ls, Ys, Out).
 
 inputs([[0,0], [0,1], [1,0], [1,1]]).
-table(Net, T) :- inputs(Is), maplist([I, Y]>>forward(Net, I, [Y]), Is, T).
+truth_table(Net, T) :- inputs(Is), maplist([I, Y]>>forward(Net, I, [Y]), Is, T).
 
 % Names for the 16 two-input functions (outputs on 00, 01, 10, 11).
 name([0,0,0,0], false). name([1,1,1,1], true).
@@ -26,7 +26,7 @@ name([0,0,1,0], a_and_not_b). name([0,1,0,0], b_and_not_a). name([1,0,1,1], b_im
 
 % code_of(+Table, -Code): the name, which is also readable code.
 code_of(T, C) :- name(T, C).
-recover(Net, C) :- table(Net, T), code_of(T, C).
+recover(Net, C) :- truth_table(Net, T), code_of(T, C).
 
-renndiff(N1, N2, D) :- table(N1, T1), table(N2, T2), code_of(T1, C1), code_of(T2, C2),
+renndiff(N1, N2, D) :- truth_table(N1, T1), truth_table(N2, T2), code_of(T1, C1), code_of(T2, C2),
     ( T1 == T2 -> D = same(C1) ; inputs(Is), findall(I-(Y1-Y2), ( nth0(K, Is, I), nth0(K, T1, Y1), nth0(K, T2, Y2), Y1 =\= Y2 ), Ds), D = differ(C1, C2, Ds) ).
